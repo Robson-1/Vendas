@@ -27,18 +27,28 @@ export const CadastroProdutos: React.FC = () => {
             cadastro
 
         }
-        service
-            .salvar(produto)
-            .then(produtoResposta => {
-                setId(produtoResposta.id)
-                setCadastro(produtoResposta.cadastro)
-            })
+
+        if (id) {
+
+            service
+                .atualizar(produto)
+                .then(response => console.log("atualizado"))
+        } else {
+
+            service
+                .salvar(produto)
+                .then(produtoResposta => {
+                    setId(produtoResposta.id)
+                    setCadastro(produtoResposta.cadastro)
+                })
+        }
+
     }
 
     return (
 
         <Layout titulo='Cadastro de Produtos'>
-            { id &&
+            {id &&
 
                 <div className="columns">
 
@@ -102,7 +112,7 @@ export const CadastroProdutos: React.FC = () => {
                 <div className="control">
                     <button className="button is-link"
                         onClick={submit}>
-                        Salvar
+                        {id ? "Atualizar" : "Salvar"}
                     </button>
                 </div>
                 <div className="control">
