@@ -1,13 +1,13 @@
-import { HTMLAttributes } from 'react'
+import { InputHTMLAttributes } from 'react'
+import { formatReal } from 'app/util/money'
 
-interface InputProps extends HTMLAttributes<HTMLInputElement> {
-    id: string
-    onChange?: (value) => void
-    label: string
-    columnClasses?: string
-    value: string
-    
-    
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    id: string;
+    onChange?: (value) => void;
+    label: string;
+    columnClasses?: string;
+    currency?: boolean;
+    error?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -15,21 +15,33 @@ export const Input: React.FC<InputProps> = ({
     label,
     columnClasses,
     id,
-    value,
+    currency,
+    error,
     ...inputProps
 }: InputProps) => {
+
+    const onInputChange = (e) => {
+        let value = e.target.value
+
+        if(value && currency) {
+            value = formatReal(value)
+        }
+
+        if(onChange) {
+            onChange(value)
+        }
+    }
+
     return (
-        <div className={`field column ${columnClasses}`}>
-            <label className="label" htmlFor={id}> {label} </label>
+        <div className={`field column ${columnClasses}` }>
+            <label className="label" htmlFor={id}>{label}</label>
             <div className="control">
-                <input className="input"
+                <input className="input" 
                     id={id} {...inputProps}
-                        onChange={e => {
-                        if (onChange) {
-                            onChange(e.target.value)
-                        }
-                    }}
-                    />
+                    onChange={onInputChange}/>
+                    {error &&
+                        <p className='help is-danger'> {error} </p>
+                    }
             </div>
         </div>
     )
